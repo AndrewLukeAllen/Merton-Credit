@@ -94,20 +94,11 @@ for row in rows:
 #########################################
 # A less toy example
 
-# -------------------------
-# Get company
-# -------------------------
-
 company = (
     session.query(Company)
     .filter_by(ticker="GOOG")
     .first()
 )
-
-
-# -------------------------
-# Get market data
-# -------------------------
 
 market_data = (
     session.query(MarketData)
@@ -125,10 +116,6 @@ prices = pd.DataFrame([
 ])
 
 
-# -------------------------
-# Equity volatility
-# -------------------------
-
 prices["return"] = np.log(
     prices["close"] /
     prices["close"].shift(1)
@@ -140,9 +127,6 @@ equity_volatility = (
 )
 
 
-# -------------------------
-# Latest financials
-# -------------------------
 
 financial = (
     session.query(Financials)
@@ -150,11 +134,6 @@ financial = (
     .order_by(Financials.date.desc())
     .first()
 )
-
-
-# -------------------------
-# Equity value
-# -------------------------
 
 latest_price = prices.iloc[-1]["close"]
 
