@@ -9,19 +9,19 @@ engine = sq.create_engine(
 
 Base = declarative_base()
 
-class Companies(Base):
+class Company(Base):
 
     __tablename__ = "companies"
 
     company_id = sq.Column(sq.Integer, primary_key=True, autoincrement= True)
 
-    ticker = sq.Column(sq.String, nullable=False)
+    ticker = sq.Column(sq.String, nullable=False, unique=True)
     sector = sq.Column(sq.String, nullable=False)
     company_name = sq.Column(sq.String, nullable=False)
 
-    market_data = sq.relationship("MarketData", back_populates="company")
-    financials = sq.relationship("Financials", back_populates="company")
-    merton_results = sq.relationship("MertonResults", back_populates="company")
+    market_data = relationship("MarketData", back_populates="company")
+    financials = relationship("Financials", back_populates="company")
+    merton_results = relationship("MertonResults", back_populates="company")
 
 class MarketData(Base):
 
@@ -34,7 +34,7 @@ class MarketData(Base):
     date = sq.Column(sq.Date)
     close_price = sq.Column(sq.Float)
 
-    company = sq.relationship("Companies", back_populates="market_data")
+    company = relationship("Company", back_populates="market_data")
 
 
 
@@ -53,7 +53,7 @@ class Financials(Base):
     ebitda = sq.Column(sq.Float)
     interest_expense = sq.Column(sq.Float)
 
-    company = relationship("Companies", back_populates="financials")
+    company = relationship("Company", back_populates="financials")
 
 class MertonResults(Base):
 
@@ -71,12 +71,12 @@ class MertonResults(Base):
     distance_to_default = sq.Column(sq.Float)
     probability_of_default = sq.Column(sq.Float)
 
-    company = relationship("Companies", back_populates="merton_results")
+    company = relationship("Company", back_populates="merton_results")
 
 
 Session = sessionmaker(bind = engine)
 
 session = Session()
 
-def create_table():
+def create_tables():
     Base.metadata.create_all(engine)
