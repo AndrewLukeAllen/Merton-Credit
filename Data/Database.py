@@ -27,12 +27,15 @@ class MarketData(Base):
 
     __tablename__ = "market_data"
 
+    # Turns out these are needed to make this work
+    __table_args__ = sq.UniqueConstraint("company_id", "date", name="uq_market_company_date"),
+
     id = sq.Column(sq.Integer, primary_key=True, autoincrement=True)
 
     company_id = sq.Column(sq.Integer, sq.ForeignKey("companies.company_id"), nullable=False)
 
     date = sq.Column(sq.Date)
-    close_price = sq.Column(sq.Float)
+    close = sq.Column(sq.Float)
 
     company = relationship("Company", back_populates="market_data")
 
@@ -41,14 +44,15 @@ class MarketData(Base):
 class Financials(Base):
 
     __tablename__ = "financials"
+    __table_args__ = sq.UniqueConstraint("company_id", "date", name="uq_financial_company_date"),
 
     financial_id = sq.Column( sq.Integer,primary_key=True, autoincrement=True)
 
     company_id = sq.Column(sq.Integer, sq.ForeignKey("companies.company_id"), nullable=False)
     date = sq.Column(sq.Date, nullable=False)
+
     total_assets = sq.Column(sq.Float)
-    short_term_debt = sq.Column(sq.Float)
-    long_term_debt = sq.Column(sq.Float)
+    total_debt = sq.Column(sq.Float)
     cash = sq.Column(sq.Float)
     ebitda = sq.Column(sq.Float)
     interest_expense = sq.Column(sq.Float)

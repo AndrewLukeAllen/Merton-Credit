@@ -1,9 +1,21 @@
-from datetime import date
-from Data.Database import session, create_tables, Company, Financials
+from Data.Database import (
+    session,
+    create_tables,
+    Company,
+    MarketData,
+    Financials
+)
 
-# Initial Test
+from Data.Importing import (
+    download_share_data,
+    store_share_data,
+    store_fin_data,
+    download_fin_data
+)
+
 
 create_tables()
+
 
 google = Company(
     ticker="GOOG",
@@ -11,18 +23,43 @@ google = Company(
     company_name="Alphabet Inc."
 )
 
-financial = Financials(
-    date=date(2025, 12, 31),
-    total_assets=500_000_000_000,
-    long_term_debt=20_000_000_000,
-    cash=100_000_000_000
-)
-
-google.financials.append(financial)
-
 session.add(google)
 session.commit()
 
-print(google.company_id)
-print(google.financials)
-print(google.financials[0].company)
+
+test = download_share_data(
+    "GOOG",
+    "2020-01-01",
+    "2020-06-01"
+)
+
+store_share_data(test, session)
+
+
+rows = session.query(MarketData).all()
+
+print(f"Number of rows: {len(rows)}")
+
+for row in rows[:5]:
+    print(
+        row.company.ticker,
+        row.date,
+        row.close
+    )
+
+financials = download_fin_data("GOOG")
+
+store_fin_data(financials, "GOOG",session)
+
+rows = session.query(Financials).all()
+
+print(f"Financial rows: {len(rows)}")
+
+for row in rows:
+    print(
+        row.company.ticker,
+        row.date,
+        row.total_assets,
+        row.total_debt,
+        row.cash
+    )
