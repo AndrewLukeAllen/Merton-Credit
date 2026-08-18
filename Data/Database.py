@@ -56,6 +56,7 @@ class Financials(Base):
     cash = sq.Column(sq.Float)
     ebitda = sq.Column(sq.Float)
     interest_expense = sq.Column(sq.Float)
+    ordinary_shares = sq.Column(sq.Float)
 
     company = relationship("Company", back_populates="financials")
 

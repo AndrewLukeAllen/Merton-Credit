@@ -109,6 +109,8 @@ def download_fin_data(ticker):
             "total_debt": fin.loc["Total Debt", date],
 
             "cash": fin.loc["Cash Cash Equivalents And Short Term Investments", date],
+
+            "ordinary_shares": fin.loc["Ordinary Shares Number", date],
         }
 
         records.append(record)
@@ -132,6 +134,7 @@ def store_fin_data(data, ticker, session):
             "total_assets": record["total_assets"],
             "total_debt": record["total_debt"],
             "cash": record["cash"],
+            "ordinary_shares": record["ordinary_shares"],
         }
         for record in data
     ]
@@ -144,6 +147,7 @@ def store_fin_data(data, ticker, session):
             "total_assets": stmt.excluded.total_assets,
             "total_debt": stmt.excluded.total_debt,
             "cash": stmt.excluded.cash,
+            "ordinary_shares": stmt.excluded.ordinary_shares,
         }
     )
 
