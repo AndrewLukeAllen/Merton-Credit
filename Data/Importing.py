@@ -115,6 +115,8 @@ def download_fin_data(ticker):
 
     return records
 
+# No batch inserts yet, as i have not run into any problems yet ( we only get 1 report a year, 
+# would need 10000 years to make us exceed the row limit in a single  import).
 def store_fin_data(data, ticker, session):
 
     company = session.query(Company).filter_by(ticker=ticker).first()
