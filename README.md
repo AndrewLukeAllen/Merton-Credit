@@ -36,5 +36,6 @@ I will say the model has been succesful if it can resonably predict that if:
 2. Done (historical, likely will improve to GARCH)
 3. Kinda (Currently just use Total debt for simplicity)
 4. Done
-5. Done ( assume PD ~ N(DtD))
+5. Done (assume PD ~ N(DtD))
 6. In progress
+    - Added filing date to to manually catch lookahead bias

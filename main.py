@@ -15,11 +15,13 @@ from Data.Importing import (
     store_share_data,
     store_fin_data,
     import_fin_data,
-    store_fin_data
+    store_fin_data,
+    download_share_data_sec,
+    inspect_debt_concepts
 )
 
 from merton_model import MertonModel
-from backtesting import MertonBacktester
+from backtesting import MertonBacktester, WasMertonRight
 
 from sqlalchemy import select
 
@@ -50,18 +52,18 @@ create_tables()
 
 # Test if this all plays nice with the Merton Model
 
-stmt = select(Financials.ordinary_shares).where(Financials.company_id == 1)
-shares = session.scalars(stmt).all()
+# stmt = select(Financials.ordinary_shares).where(Financials.company_id == 1)
+# shares = session.scalars(stmt).all()
 
-stmt = select(MarketData.close, MarketData.date).where(MarketData.company_id == 1)
-price = pd.read_sql(stmt,session.bind,columns=["close", "date"])
+# stmt = select(MarketData.close, MarketData.date).where(MarketData.company_id == 1)
+# price = pd.read_sql(stmt,session.bind,columns=["close", "date"])
 
-stmt = select(Financials.total_debt).where(Financials.company_id == 1)
-debt = session.scalars(stmt).all()
+# stmt = select(Financials.total_debt).where(Financials.company_id == 1)
+# debt = session.scalars(stmt).all()
 
-equity_val = shares[-1] * price["close"].iloc[-1]
-m = MertonModel(equity_val,price,debt[-1],1)
-results = m.run()
+# equity_val = shares[-1] * price["close"].iloc[-1]
+# m = MertonModel(equity_val,price,debt[-1],1)
+# results = m.run()
 
 # print(results)
 
@@ -69,31 +71,36 @@ results = m.run()
 
 # We now test the backtester ha
 
-stmt = select(MarketData.close,MarketData.date).where(MarketData.company_id == 1).order_by(MarketData.date)
-price = pd.read_sql(stmt, session.bind)
+# stmt = select(MarketData.close,MarketData.date).where(MarketData.company_id == 1).order_by(MarketData.date)
+# price = pd.read_sql(stmt, session.bind)
 
-stmt = (
-    select(
-        Financials.filing_date,
-        Financials.period_end,
-        Financials.total_debt,
-        Financials.ordinary_shares
-    )
-    .where(Financials.company_id == 1)
-    .order_by(Financials.filing_date)
-)
+# stmt = (
+#     select(
+#         Financials.filing_date,
+#         Financials.period_end,
+#         Financials.total_debt,
+#         Financials.ordinary_shares
+#     )
+#     .where(Financials.company_id == 1)
+#     .order_by(Financials.filing_date)
+# )
 
-financials = pd.read_sql(stmt, session.bind)
+# financials = pd.read_sql(stmt, session.bind)
 
-backtester = MertonBacktester(
-    company_id=1,
-    market_data=price,
-    financials=financials,
-    volatility_window=252,
-    maturity=1,
-    risk_free_rate=0.00
-)
+# backtester = MertonBacktester(
+#     company_id=1,
+#     market_data=price,
+#     financials=financials,
+#     volatility_window=252,
+#     maturity=1,
+#     risk_free_rate=0.00
+# )
 
-results = backtester.run()
+# results = backtester.run()
 
-print(results)
+# print(results)
+
+
+##### LEt's see if our model can actually do something
+
+#

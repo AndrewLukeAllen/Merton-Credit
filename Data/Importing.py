@@ -94,16 +94,45 @@ def store_share_data(data,session):
 # debt is essentially the portion of long-term debt due to be settled
 # within 1 year
 
-def import_fin_data(ticker,start_year, end_year):
+def import_fin_data(ticker,start_year, end_year,cik=None):
 
     results = []
     # SEC needs to know who we are to access their data
     set_identity("Andrew Allen andrewlukeallen@email.com")
 
+    # Delisted stuff no longer has a ticker
+    if cik is not None:
+        company = edgar_company(cik)
+    else:
+        company = edgar_company(ticker)
 
-    company = edgar_company(ticker)
     facts = company.get_facts()
     all_facts = facts.get_all_facts()
+
+    ##########################TESTING STUF
+    print("\nGM XBRL concepts:")
+    print("-" * 80)
+
+    for fact in all_facts:
+
+        if fact.fiscal_year is None:
+            continue
+
+        if not (2006 <= fact.fiscal_year <= 2009):
+            continue
+
+        if fact.numeric_value is None:
+            continue
+
+        print(
+            fact.concept,
+            "| period:", fact.period_end,
+            "| filed:", fact.filing_date,
+            "| FY:", fact.fiscal_year,
+            "| period:", fact.fiscal_period,
+            "| value:", fact.numeric_value
+        )
+    ##########################################################
 
     # What we actually want 
     concepts = {
@@ -230,4 +259,33 @@ def store_fin_data(data,ticker,session,alpha = 1):
         f"{ticker}: "
         f"{len(records)} financial records stored"
     )
+
+# yfinance does not like delisted shares
+
+def download_share_data_sec(tickers, start, end):
+
+    prices = yf.download(
+        tickers,
+        start=start,
+        end=end,
+        auto_adjust=False
+    )
+
+    if prices.empty:
+        print(f"No price data found for {tickers}")
+        return pd.DataFrame(
+            columns=["ticker", "date", "close"]
+        )
+
+    prices = (
+        prices.stack(level=1, future_stack=True)
+        .reset_index()
+        .rename(columns={
+            "Ticker": "ticker",
+            "Date": "date",
+            "Close": "close",
+        })
+    )
+
+    return prices
 

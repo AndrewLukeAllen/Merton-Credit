@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 
 from merton_model import MertonModel
+from sklearn.metrics import roc_auc_score
 
 class MertonBacktester:
 
@@ -95,3 +96,64 @@ class MertonBacktester:
         self.results = pd.DataFrame(results)
 
         return self.results
+
+class WasMertonRight:
+
+    def __init__(self, merton_results,distress_events):
+
+        self.results = merton_results.copy()
+        self.events = distress_events.copy()
+
+    def create_labels(self, horizon_days):
+
+        events = self.events[self.events["company_id"] == self.results["company_id"].iloc[0]]
+
+        event_dates = events["event_date"].sort_values()
+
+        labels = []
+
+        for date in self.results["date"]:
+
+            event_in_window = ((event_dates > date) & (event_dates <= date + pd.Timedelta(days=horizon_days))).any()
+            labels.append(int(event_in_window))
+
+        self.results["distress"] = labels
+
+        return self.results
+
+    def calculate_auc(self):
+
+        data = self.results.dropna(
+            subset=[
+                "distress",
+                "distance_to_default",
+                "probability_of_default"
+            ]
+        )
+
+        if data["distress"].nunique() < 2:
+            return None
+
+        dtd_auc = roc_auc_score(data["distress"],-data["distance_to_default"])
+
+        pd_auc = roc_auc_score(data["distress"], data["probability_of_default"])
+
+        return {"DtD AUC": dtd_auc, "PD AUC": pd_auc}
+
+    def compare_debt_to_assets(self):
+
+        data = self.results.dropna(
+            subset=[
+                "distress",
+                "total_debt",
+                "total_assets"
+            ]
+        ).copy()
+
+        data["debt_to_assets"] = data["total_debt"] / data["total_assets"]
+
+        auc = roc_auc_score(data["distress"], data["debt_to_assets"])
+
+        return {"Debt / Assets AUC": auc}
+
+    

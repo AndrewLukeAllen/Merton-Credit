@@ -22,6 +22,7 @@ class Company(Base):
     market_data = relationship("MarketData", back_populates="company")
     financials = relationship("Financials", back_populates="company")
     merton_results = relationship("MertonResults", back_populates="company")
+    distress_events = relationship("Distress", back_populates="company")
 
 class MarketData(Base):
 
@@ -77,6 +78,19 @@ class MertonResults(Base):
 
     company = relationship("Company", back_populates="merton_results")
 
+class Distress(Base):
+
+    __tablename__ = "distress_events"
+
+    event_id = sq.Column(sq.Integer,primary_key=True,autoincrement=True)
+
+    company_id = sq.Column(sq.Integer,sq.ForeignKey("companies.company_id"),nullable=False)
+
+    event_date = sq.Column(sq.Date, nullable=False)
+    event_type = sq.Column(sq.String, nullable=False)
+    description = sq.Column(sq.String)
+
+    company = relationship("Company",back_populates="distress_events")
 
 Session = sessionmaker(bind = engine)
 
