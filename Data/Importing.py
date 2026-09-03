@@ -150,8 +150,7 @@ def import_fin_data(ticker,start_year, end_year):
 
     return pd.DataFrame(results)
 
-
-def store_fin_data(data,ticker,session):
+def store_fin_data(data,ticker,session,alpha = 1):
 
     company = session.query(Company).filter_by(ticker=ticker).first()
     if company is None:
@@ -179,11 +178,8 @@ def store_fin_data(data,ticker,session):
         .reset_index()
     )
 
-    # Total debt = current portion + long-term portion
-    financials["total_debt"] = (
-        financials["current"].fillna(0)
-        + financials["longterm"].fillna(0)
-    )
+    # Total debt = current portion + alpha * long-term portion (if its not immediately due who really cares)
+    financials["total_debt"] = financials["current"].fillna(0) + alpha * financials["longterm"].fillna(0)
 
     # Rename columns to match database
     financials = financials.rename(columns={

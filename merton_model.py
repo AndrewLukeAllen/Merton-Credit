@@ -20,11 +20,23 @@ def calc_equity_vol(prices):
 # https://www.sciencedirect.com/topics/social-sciences/distance-to-default . Includes summary/ explanation of the formulas
 class MertonModel:
 
-    def __init__(self, equity_value, equity_volatility, debt,
-        risk_free_rate,maturity):
+    def __init__(self, equity_value, prices, debt, maturity, risk_free_rate = 0.00):
+
+        # we commited some oopsies inspricing this
+        if equity_value <= 0:
+            raise ValueError("Equity value must be positive")
+
+        if debt <= 0:
+            raise ValueError("Debt must be positive")
+
+        if maturity <= 0:
+            raise ValueError("Maturity must be positive")
+
+        if prices.empty:
+            raise ValueError("Price data is empty")
 
         self.equity_value = equity_value
-        self.equity_volatility = equity_volatility
+        self.equity_volatility = calc_equity_vol(prices)
         self.debt = debt
         self.risk_free_rate = risk_free_rate
         self.maturity = maturity
@@ -116,9 +128,7 @@ class MertonModel:
     def run(self):
 
         self.solve_asset_values()
-
         self.calculate_distance_to_default()
-
         self.calculate_probability_of_default()
 
         # i got tired of writing float() and used chatgpt to do it for me

@@ -39,8 +39,6 @@ class MarketData(Base):
 
     company = relationship("Company", back_populates="market_data")
 
-
-
 class Financials(Base):
 
     __tablename__ = "financials"
