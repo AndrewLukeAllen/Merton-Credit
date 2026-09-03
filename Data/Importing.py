@@ -15,7 +15,7 @@ def download_share_data(tickers, start, end):
 
     # Download Share data
 
-    prices = yf.download(tickers, start=start, end=end)
+    prices = yf.download(tickers, start=start, end=end,auto_adjust=False)
 
     # Store in our database
 

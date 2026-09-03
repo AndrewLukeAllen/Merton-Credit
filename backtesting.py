@@ -97,6 +97,10 @@ class MertonBacktester:
 
         return self.results
 
+
+
+
+# Very in progress
 class WasMertonRight:
 
     def __init__(self, merton_results,distress_events):
