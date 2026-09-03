@@ -30,3 +30,6 @@ RBA already does this so it seems the motivation is sound.
 I will say the model has been succesful if it can resonably predict that if:
 1. deteriorating DtD leads to higher incidence of financial distress
 2. It outperforms Debt / Assets
+
+# Progres
+1. Done

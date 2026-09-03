@@ -6,6 +6,8 @@ from scipy.stats import norm
 
 def calc_equity_vol(prices):
 
+    # May change toi GARCH in the future
+
     prices = prices.sort_values("date")
 
     returns = np.log(prices["close"] / prices["close"].shift(1))
