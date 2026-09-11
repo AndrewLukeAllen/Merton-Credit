@@ -6,8 +6,9 @@ RBA already does this so it seems the motivation is sound.
 
 ## What is the Merton model + why did we decide to use it
 
-- Looked up on google "good quant model to determine if a company will ddefault due to debt raise" 
-    and Merton seemed the most interesting to implement.
+- Looked on google for a way to model credit risk based on equity data, as 
+    that was readily available through yfinance and SEC filings. Merton was selected 
+    as it seemed like an  interesting extension to the idea of debt to equity ratio.
 - Merton prices the equity of a company as a European call and treats debt as the strike price
     it then predict the probability of default as if total assets are < debt the company defaults.
 
@@ -39,3 +40,7 @@ I will say the model has been succesful if it can resonably predict that if:
 5. Done (assume PD ~ N(DtD))
 6. In progress
     - Added filing date to to manually catch lookahead bias
+    - Data for failed companies is annoyingly hard to get
+        may use Ford as it still exists but needs some work 
+        to reach usable point
+7. Done, it is a safe buy
