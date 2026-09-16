@@ -100,13 +100,14 @@ class MertonBacktester:
 
 
 
-# Very in progress
+# Very in progress,
 class WasMertonRight:
 
     def __init__(self, merton_results,distress_events):
 
         self.results = merton_results.copy()
-        self.events = distress_events.copy()
+        if distress_events is not None:
+            self.events = distress_events.copy() # Potentially for comparing to actual; events
 
     def create_labels(self, horizon_days):
 
@@ -154,9 +155,17 @@ class WasMertonRight:
             ]
         ).copy()
 
-        data["debt_to_assets"] = data["total_debt"] / data["total_assets"]
+        data["debt_to_assets"] = (
+            data["total_debt"] / data["total_assets"]
+        )
 
-        auc = roc_auc_score(data["distress"], data["debt_to_assets"])
+        if data["distress"].nunique() < 2:
+            return {"Debt / Assets AUC": None}
+
+        auc = roc_auc_score(
+            data["distress"],
+            data["debt_to_assets"]
+        )
 
         return {"Debt / Assets AUC": auc}
 

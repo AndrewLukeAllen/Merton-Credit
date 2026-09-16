@@ -255,3 +255,61 @@ plt.grid(True, alpha=0.3)
 
 plt.tight_layout()
 plt.show()
+plt.close()
+
+
+
+# We are going to say the distress event was at the end of 2008
+# in actuality it happened ~march of 2009, but to keep the in progress 
+# testing of the testing we will say it happened on 12-31-2008
+# which is close enough in some limited sense as this is when
+# tehy based their restructuing around.
+
+distress_events = pd.DataFrame({
+    "company_id": [2, 2],
+    "event_date": pd.to_datetime([
+        "2008-09-15",
+        "2008-11-01",
+    ]),
+    "event_type": [
+        "market_liquidity_crisis",
+        "government_financing_request",
+    ]
+})
+
+
+
+
+sutff_that_works = pls_work[[
+    "period_end",
+    "filing_date",
+    "fiscal_year",
+    "total_debt",
+    "ordinary_shares"
+]].copy()
+
+sutff_that_works["ticker"] = "F"
+sutff_that_works["company_id"] = 2
+sutff_that_works["total_assets"] = equity_val
+
+results = results.merge(
+    sutff_that_works,
+    left_on=[
+        "company_id",
+        "financial_period_end",
+        "financial_filing_date"
+    ],
+    right_on=[
+        "company_id",
+        "period_end",
+        "filing_date"
+    ],
+    how="left"
+)
+
+
+testing_the_test = WasMertonRight(results, distress_events)
+testing_the_test.create_labels(horizon_days = 22)
+print(testing_the_test.results["distress"].value_counts())
+print(testing_the_test.calculate_auc())
+print(testing_the_test.compare_debt_to_assets())

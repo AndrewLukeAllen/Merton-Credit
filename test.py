@@ -223,10 +223,13 @@ def import_total_debt_SEC(company_id,start,end):
 
         short_term_debt = cleand_df.loc[cleand_df["Description"].str.strip() == "Debt payable within one year"].iloc[0, 1]
 
-        long_term_debt = (
-            cleand_df.loc[cleand_df["Description"].str.strip() == "Debt"].iloc[0, 1]
-            +
-            cleand_df.loc[cleand_df["Description"].str.strip() == "Long-term debt"].iloc[0, 1])
+        # I really shouldn';t include ford finnaicals debt in this model
+        # long_term_debt = (
+        #     cleand_df.loc[cleand_df["Description"].str.strip() == "Debt"].iloc[0, 1]
+        #     +
+        #     cleand_df.loc[cleand_df["Description"].str.strip() == "Long-term debt"].iloc[0, 1])
+
+        long_term_debt = cleand_df.loc[cleand_df["Description"].str.strip() == "Long-term debt"].iloc[0, 1]
 
 
         # Share stuff 
