@@ -40,7 +40,9 @@ I will say the model has been succesful if it can resonably predict that if:
 5. Done (assume PD ~ N(DtD))
 6. In progress
     - Added filing date to to manually catch lookahead bias
-    - Data for failed companies is annoyingly hard to get
-        may use Ford as it still exists but needs some work 
-        to reach usable point
+    - Moderately robust version of SEC filing importer 
+        for ~2007-2009 period, modified version needed for 
+        pre 2006 data due to different file format
+    - Almost finished diagnostics and benchmark debt / equity
+    - Added plot to show dtd 
 7. Done, it is a safe buy

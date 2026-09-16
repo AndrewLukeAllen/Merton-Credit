@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import yfinance as yf
+import matplotlib.pyplot as plt 
 
 from Data.Database import (
     session,
@@ -234,3 +235,23 @@ backtester = MertonBacktester(
 results = backtester.run()
 
 print(results)
+
+results["date"] = pd.to_datetime(results["date"])
+results = results.sort_values("date")
+
+plt.figure(figsize=(12, 6))
+
+plt.plot(
+    results["date"],
+    results["distance_to_default"],
+    linewidth=2,
+    color="steelblue"
+)
+
+plt.xlabel("Date")
+plt.ylabel("Distance to Default")
+plt.title(f"Distance to Default — Company {results['company_id'].iloc[0]}")
+plt.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
