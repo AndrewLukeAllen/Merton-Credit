@@ -38,11 +38,29 @@ I will say the model has been succesful if it can resonably predict that if:
 3. Kinda (Currently just use Total debt for simplicity)
 4. Done
 5. Done (assume PD ~ N(DtD))
-6. In progress
+6. Done
     - Added filing date to to manually catch lookahead bias
     - Moderately robust version of SEC filing importer 
         for ~2007-2009 period, modified version needed for 
         pre 2006 data due to different file format
     - Almost finished diagnostics and benchmark debt / equity
     - Added plot to show dtd 
+    - Ford had debt in both its financial services andautomotives arm
+        I have seperated them and calculate total debt only off the automotive
+        segment
+    - Using Debt / Equity (Market Cap) as the current benchmark
 7. Done, it is a safe buy
+
+- Code cleaning and properly constructing the SEC import functiuon / some function 
+    descriptors is all that is left
+- Would be nice to compare a few other companies that failed in the GFC
+
+# Results / improvements
+
+From limited testing merton performed simliarly to debt / equity, however there were more areas for
+improvement that could improve those results eg. better volatility model, better classifcation of debts. 
+It does accurately predict companies in extreme situations like Ford in 2008, further 
+testing should be done on companies in less extreme but similarly precarious situations to further validate this result.
+
+From the limited testing the google debt rais is safe, which is unsuprising as it has been rated as AA debtor, whether
+buying its debt over a goverments is better is arguable and depends more on the interest rates and so on.

@@ -310,6 +310,36 @@ results = results.merge(
 
 testing_the_test = WasMertonRight(results, distress_events)
 testing_the_test.create_labels(horizon_days = 22)
-print(testing_the_test.results["distress"].value_counts())
+
 print(testing_the_test.calculate_auc())
 print(testing_the_test.compare_debt_to_assets())
+
+testing_the_test.compare_debt_to_assets()
+
+plot_data = testing_the_test.results.sort_values("date").copy()
+
+fig, ax1 = plt.subplots(figsize=(12, 6))
+
+ax1.plot(
+    plot_data["date"],
+    plot_data["distance_to_default"],
+    label="Merton Distance to Default",
+    color="blue"
+)
+
+ax1.set_ylabel("Distance to Default")
+ax1.set_xlabel("Date")
+
+ax2 = ax1.twinx()
+
+ax2.plot(
+    plot_data["date"],
+    plot_data["debt_to_assets"],
+    label="Debt / Market Equity",
+    color="red"
+)
+
+ax2.set_ylabel("Debt / Market Equity")
+
+plt.title("Ford: Merton DtD vs Debt / Market Equity")
+plt.show()

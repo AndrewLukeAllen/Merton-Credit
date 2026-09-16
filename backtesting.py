@@ -147,26 +147,24 @@ class WasMertonRight:
 
     def compare_debt_to_assets(self):
 
-        data = self.results.dropna(
-            subset=[
-                "distress",
-                "total_debt",
-                "total_assets"
-            ]
-        ).copy()
-
-        data["debt_to_assets"] = (
-            data["total_debt"] / data["total_assets"]
+        self.results["debt_to_assets"] = (
+            self.results["total_debt"] /
+            self.results["asset_value"]
         )
 
+        data = self.results.dropna(subset=["distress", "debt_to_assets"]).copy()
+
+        print("Debt/Equity Value by distress status:")
+        print(data.groupby("distress")["debt_to_assets"].agg(["count", "mean", "median", "min", "max"]))
+
         if data["distress"].nunique() < 2:
-            return {"Debt / Assets AUC": None}
+            return {"Debt / Asset Value AUC": None}
 
         auc = roc_auc_score(
             data["distress"],
             data["debt_to_assets"]
         )
 
-        return {"Debt / Assets AUC": auc}
+        return {"Debt / Equity Value AUC": auc}
 
     
