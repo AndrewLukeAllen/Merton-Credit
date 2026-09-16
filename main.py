@@ -181,7 +181,7 @@ price = pd.read_sql(stmt,session.bind,columns=["close", "date"])
 # stmt = select(Financials.total_debt).where(Financials.company_id == company_id)
 # debt = session.scalars(stmt).all()
 
-equity_val = pls_work["total_shares"].iloc[0] * price["close"].iloc[-1]
+equity_val = pls_work["ordinary_shares"].iloc[0] * price["close"].iloc[-1]
 m = MertonModel(equity_val,price,pls_work["total_debt"].iloc[0],1)
 results = m.run()
 
@@ -191,8 +191,8 @@ print(f"Simple debt / equity is = {pls_work["total_debt"].iloc[0] / equity_val}"
 # IT is doing terribly and will crash, almost 5x what it is now days
 
 # Test backtest 
-# stmt = select(MarketData.close,MarketData.date).where(MarketData.company_id == company_id).order_by(MarketData.date)
-# price = pd.read_sql(stmt, session.bind)
+stmt = select(MarketData.close,MarketData.date).where(MarketData.company_id == company_id).order_by(MarketData.date)
+price = pd.read_sql(stmt, session.bind)
 
 # stmt = (
 #     select(
@@ -207,7 +207,7 @@ print(f"Simple debt / equity is = {pls_work["total_debt"].iloc[0] / equity_val}"
 #     .order_by(Financials.filing_date)
 # )
 
-# financials = pd.read_sql(stmt, session.bind)
+# # financials = pd.read_sql(stmt, session.bind)
 
 # print(
 #     financials[
@@ -222,4 +222,15 @@ print(f"Simple debt / equity is = {pls_work["total_debt"].iloc[0] / equity_val}"
 #     ].tail(10)
 # )
 
-# # backtester = MertonB
+backtester = MertonBacktester(
+    company_id=2,
+    market_data=price,
+    financials=pls_work,
+    volatility_window=252,
+    maturity=1,
+    risk_free_rate=0.00
+)
+
+results = backtester.run()
+
+print(results)

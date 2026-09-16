@@ -248,14 +248,14 @@ def import_total_debt_SEC(company_id,start,end):
             class_b_shares.split("(")[1].split("million")[0].replace(",", "").strip()
         )
 
-
+        # Note that technically class b shares are not ordinary shares. will fix later 
         results.append({
             "ticker": "F",
             "period_end": cleand_df.columns[1],
             "filing_date": filing.filing_date,
             "fiscal_year": pd.to_datetime(cleand_df.columns[1]).year,
             "total_debt": (short_term_debt + long_term_debt ) * 1e6,
-            "total_shares": (common_shares + class_b_shares) * 1e6,
+            "ordinary_shares": (common_shares + class_b_shares) * 1e6,
         })
 
     return pd.DataFrame(results)
