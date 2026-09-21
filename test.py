@@ -1,23 +1,16 @@
 # pre 2010 data has no xbrl file or something, so we need
 # to automate the extraction of the debt data that we want.
-# Am using chatGPT to write these functions and have added 
-# after testing.
 
-# Some comments on how it went. Originally with a very open
-# ended prompt it decided to try and parse the html 
-# and discover what years did not have xbrl data.
-# This was long and overly complicated.
-# I updated the prompt to parse only the necissary tables
-# from the filing, then let AI go ham to get the data needed.
+# Some comments on how it went. Originally attempted to parse
+# entire html which failed.
+# Attempted to parse as text then convert to pd
+# Searched HTML for keywords to isolate desired
+# cleaned HTML then put into pd
 
 # This is not a very flexible solution
 # if we tried to adapt it to say lehman brothers
 # Will think on some improvements that could make it possible.
 
-# There was some circular prompting when trying to get it to fix its errors
-# towards the end, so I just started manually fixing it.
-
-# iT WORKS 
 
 import pandas as pd
 from edgar import Company, set_identity
@@ -84,9 +77,8 @@ def import_total_debt_SEC(company_id,start,end):
 
         soup = BeautifulSoup(html_content, "lxml")
 
-        # ---------------------------------------------------------
         # Find the Ford Sector Balance Sheet
-        # ---------------------------------------------------------
+
 
         my_table = None
 
@@ -117,9 +109,8 @@ def import_total_debt_SEC(company_id,start,end):
 
         print("Sector Balance Sheet found!")
 
-        # ---------------------------------------------------------
         # Extract rows manually
-        # ---------------------------------------------------------
+
 
         rows = []
 
@@ -144,18 +135,17 @@ def import_total_debt_SEC(company_id,start,end):
 
             rows.append(row)
 
-        # ---------------------------------------------------------
+
         # Remove completely empty rows
-        # ---------------------------------------------------------
+
 
         rows = [
             row for row in rows
             if any(cell.strip() for cell in row)
         ]
 
-        # ---------------------------------------------------------
         # Make all rows the same length
-        # ---------------------------------------------------------
+
 
         max_columns = max(len(row) for row in rows)
 
@@ -164,9 +154,7 @@ def import_total_debt_SEC(company_id,start,end):
             for row in rows
         ]
 
-        # ---------------------------------------------------------
         # Create DataFrame
-        # ---------------------------------------------------------
 
         df = pd.DataFrame(rows)
 
@@ -179,9 +167,7 @@ def import_total_debt_SEC(company_id,start,end):
         # Reset index
         df = df.reset_index(drop=True)
 
-        # ---------------------------------------------------------
         # Combine split negative numbers
-        # ---------------------------------------------------------
 
         for col in df.columns:
 
@@ -197,9 +183,7 @@ def import_total_debt_SEC(company_id,start,end):
                     # Leave for now; closing parenthesis may be next cell
                     pass
 
-        # ---------------------------------------------------------
         # Print ONLY the DataFrame
-        # ---------------------------------------------------------
 
         # Cleans inputs so we have int (actually float cause thats what the db takes) data to work with
 
@@ -217,7 +201,7 @@ def import_total_debt_SEC(company_id,start,end):
         # We now need to add these important filings into the df we actually export
 
         # This importinng is imperfect, normally i would attatch fiscal_period
-        # but it is marginally more effor than it is worth ATM.
+        # but it is marginally more effort than it is worth ATM.
 
         # The allocation of short/long term debt is to the best of my knowledge
 
