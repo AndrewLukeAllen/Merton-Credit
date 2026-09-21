@@ -49,7 +49,7 @@ I will say the model has been succesful if it can resonably predict that if:
         I have seperated them and calculate total debt only off the automotive
         segment
     - Using Debt / Equity (Market Cap) as the current benchmark
-7. Done, it is a safe buy
+7. Done, Debt rais is safe
 
 - Code cleaning and properly constructing the SEC import functiuon / some function 
     descriptors is all that is left
