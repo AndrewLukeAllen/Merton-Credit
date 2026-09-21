@@ -16,9 +16,9 @@ from Data.Importing import (
     store_share_data,
     store_fin_data,
     import_fin_data,
-    store_fin_data,
-    download_share_data_sec
-)
+    store_fin_data)
+
+from Data.Import_SEC import import_total_debt_SEC
 
 from merton_model import MertonModel
 from backtesting import MertonBacktester, WasMertonRight
@@ -152,6 +152,7 @@ plt.close()
 TICKER = "F"
 START_DATE = "2007-01-01"
 END_DATE = "2008-12-31"
+
 
 # ford = Company(
 #     ticker="F",
